@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[ "$DEBUG" ] && set -xe
+
 ## Look for docker secrets in default documented location.
 docker_secrets_env() {
     local ACCESS_KEY_FILE="/run/secrets/$MINIO_ACCESS_KEY_FILE"
@@ -16,7 +18,9 @@ docker_secrets_env() {
 }
 
 ## Set access env from secrets if necessary.
-docker_secrets_env
+if [ -z $MINIO_ACCESS_KEY -o -z $MINIO_SECRET_KEY ]; then
+    docker_secrets_env
+fi
 
 if [ "${1}" == "bash" ];then
     exec /bin/bash
